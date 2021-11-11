@@ -2,8 +2,6 @@
 #include<initializer_list>
 #include<iostream>
 
-//typedef unsigned int size_t;
-
 class mystring
 {
 public:
@@ -12,12 +10,29 @@ public:
     friend mystring operator+(mystring& lhs, const char* s);
     friend mystring operator+(mystring& lhs, char ch);
     friend int compares(const char* lhs, const char* rhs,const size_t range);
+
     mystring();
     mystring(size_t size, char ch);
     mystring(const mystring& s, size_t pos, size_t count);
     mystring(const char* s, size_t count);
     mystring(const char* s);
-    //mystring(iter,iter);
+    class iterator
+    {
+    public:
+        iterator(char* s = nullptr) :str_(s) {}
+        char& operator*() { return *operator->(); }
+        char* operator->() { return str_; }
+        size_t operator-(iterator rhs) { return strlen(rhs.str_) - strlen(str_); }
+        iterator& operator++() { ++str_; return *this; }
+        iterator operator++(int) { iterator old = *this; operator++(); return old; }
+        iterator& operator--() { --str_; return *this; }
+        iterator operator--(int) { iterator old = *this; operator--(); return old; }
+        bool operator==(iterator rhs) { return str_ == rhs.str_; }
+        bool operator!=(iterator rhs) { return str_ != rhs.str_; }
+    private:
+        char* str_;
+    };
+    mystring(iterator first, iterator last);
     mystring(const mystring& s);
     mystring(mystring&& s)noexcept;
     mystring(std::initializer_list<char> ilist);
@@ -43,6 +58,8 @@ public:
     char& back();
     const char* data()const;
     const char* c_str()const;
+    iterator begin()const { return iterator(data_); }
+    iterator end()const { return iterator(data_ + size_); }
 
     size_t size()const;
     size_t length()const;

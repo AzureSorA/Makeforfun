@@ -2,9 +2,16 @@
 
 mystring::mystring()
 {
-    data_ = new char[size_ + 1];
-    data_[size_] = '\0';
     size_ = 0;
+    data_ = new char[size_ + 1];
+    if (data_ != nullptr)
+    {
+        data_[size_] = '\0';
+    }
+    else
+    {
+        std::abort();
+    }
 }
 
 mystring::mystring(const char* s):data_(nullptr),size_(0)
@@ -47,6 +54,17 @@ mystring::mystring(const mystring& s) :data_(nullptr)
     mystring tmp(s.data_);
     std::swap(data_, tmp.data_);
     std::swap(size_, tmp.size_);
+}
+
+mystring::mystring(iterator first, iterator last)
+{
+    size_ = last - first;
+    data_ = new char[size_ + 1];
+    for (size_t i = 0; i < size_; ++i)
+    {
+        data_[i] = *first++;
+    }
+    data_[size_] = '\0';
 }
 
 mystring::mystring(const mystring& s,size_t pos,size_t count):data_(nullptr), size_(0)
@@ -94,7 +112,7 @@ mystring::mystring(size_t count,char ch):size_(count)
 
 mystring::mystring(std::initializer_list<char> ilist) :data_(nullptr), size_(0)
 {
-    size_t size_ = ilist.size();
+    size_ = ilist.size();
     data_ = new char[size_ + 1];
     if (data_ != nullptr)
     {
@@ -509,8 +527,11 @@ void mystring::push_back(char ch)
 
 void mystring::pop_back()
 {
-    --size_;
-    data_[size_] = '\0';
+    if (size_ > 0)
+    {
+        --size_;
+        data_[size_] = '\0';
+    }
 }
 
 mystring& mystring::append(char ch)
