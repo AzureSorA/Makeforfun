@@ -544,6 +544,7 @@ mystring& mystring::append(char ch)
     {
         data_[i] = *tmp++;
     }
+    delete[] old;
     data_[size_ - 1] = ch;
     data_[size_] = '\0';
     return *this;
